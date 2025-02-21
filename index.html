@@ -15,24 +15,24 @@ palMHI<-colorQuantile(palette = "viridis", domain=States$MHI, n=10)
 palMHV<-colorQuantile(palette = "RdYlBu", domain=States$MHV, n=10)
 palpop<-colorQuantile(palette = "RdBu", domain=States$Totalpop, n=10)
 
-map<-States %>% # Data set you want to map and the '%>%' is a piping command which makes it keep moving forward 
-  st_transform(crs = "+init=epsg:4326") %>% # Setting the projection of our simple feature spatial dataframe to match the webmapping application
-  leaflet() %>%  # Leaflet function which puts this all in motion
-  setView(lng = -98.55, lat = 39.8098, zoom = 3)%>% # the lng and lat set the center point, while zoom chooses how zoomed in it is
-  addTiles(group = "OSM (default)") %>%  #This sets the base map and the following addProviderTiles() are optional otehr basemaps
+map<-States %>%
+  st_transform(crs = "+init=epsg:4326") %>%
+  leaflet() %>%
+  setView(lng = -98.55, lat = 39.8098, zoom = 3)%>%
+  addTiles(group = "OSM (default)") %>%
   addProviderTiles(providers$CartoDB.Positron, group = "Carto B") %>%
-  addPolygons(group = "Total", #Add polygons is how we choose what we want to map.
-    popup = paste("State: ", States$NAME, "<br>", #Pop up provides the pop up information if we were to click on the county, paste() pastes all the text together
-                            "Total Population: ", States$Totalpop, "<br>", # <br> is html code for new line.   
+  addPolygons(group = "Total",
+    popup = paste("State: ", States$NAME, "<br>",
+                            "Total Population: ", States$Totalpop, "<br>",   
                             "Median Household Income: ", "$", States$MHI, "<br>",
                             "Median Home Value: ", "$", States$MHV, "<br>"),
               stroke = FALSE,
               smoothFactor = 0,
               fillOpacity = 0.7,
-              color = ~ palpop(Totalpop)) %>% #Color palette or what the color scheme is.  You made these earlier and they need to match
-  addLegend(position = "bottomleft", pal=palpop, values= States$Totalpop, #Legend for this polygon layer
+              color = ~ palpop(Totalpop)) %>%
+  addLegend(position = "bottomleft", pal=palpop, values= States$Totalpop,
             title="Percentile of State Total Population", group = "Total", opacity = 1) %>% 
-  addPolygons(group = "MHI", #Next layer with the same set up as before.  We could add as many as the computer would let us. 
+  addPolygons(group = "MHI",
               popup = paste("State: ", States$NAME, "<br>",
                             "Total Population: ", States$Totalpop, "<br>",
                             "Median Household Income: ", "$", States$MHI, "<br>",
@@ -55,9 +55,9 @@ map<-States %>% # Data set you want to map and the '%>%' is a piping command whi
   addLegend(position = "bottomleft", pal=palMHV, values= States$MHV, 
             title="Percentile of State Median Household Income", group = "MHV", opacity = 1) %>% 
 
-  hideGroup("MHI") %>% # Hides the MHI layer so it doesn't all pop up at load
-  hideGroup("MHV") %>% # Hides the MHV layer so it all doesn't pop up at the load
-  addLayersControl(  #Gives you the option to turn on and off different basemaps or layers.
+  hideGroup("MHI") %>% 
+  hideGroup("MHV") %>% 
+  addLayersControl(
     baseGroups = c("OSM (default)", "Toner Lite", "Carto B"),
     overlayGroups = c("Total", "MHI", "MHV"),
     options = layersControlOptions(collapsed = FALSE)) 
