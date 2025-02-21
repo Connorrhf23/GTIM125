@@ -1,9 +1,9 @@
-State<-get_acs(geography = "state",  #Defining the spatial scale
-                      variables = Variables, #grabbing the variables we defined previously
-                      survey = "acs5",      # survey we are pulling is the ACS 5 year estimates
-                      year = 2020,   # End year for the 5 year estimates- 2016-2020
-                      output = "wide", # data format wide (cross sectional)
-                      geometry=T) # Pulls the spatial data information with it.
+State<-get_acs(geography = "state",
+                      variables = Variables,
+                      survey = "acs5",  
+                      year = 2020,
+                      output = "wide",
+                      geometry=T)
 
 States<-State[,c("GEOID", "NAME", "MHIE", "MHVE", "TotalpopE", "geometry")]
 
